@@ -1,4 +1,4 @@
-openapi: "3.1.1"
+openapi: "3.0.4"
 info:
   title: "Canada Post App API"
   version: "master"
@@ -60,51 +60,70 @@ components:
         PageNumber:
           type: integer
         Results:
+          type: array
+          items:
+            $ref: "#/components/schemas/MyMailResult"
+      required:
+        - PageNumber
+        - Results
+    MyMailResult:
+      type: object
+      properties:
+        Mailpieces:
+          type: array
+          items:
+            $ref: "#/components/schemas/Mailpiece"
+        Date:
+          type: string
+          format: full-date
+          description: "Date on which the mailpieces were/will be delivered"
+      required:
+        - Mailpieces
+        - Date
+    Mailpiece:
+      type: object
+      properties:
+        SOMIdentifier:
+          type: string
+        Mailer:
           type: object
           properties:
-            Mailpieces:
-              type: array
-              items:
-                type: object
-                properties:
-                  SOMIdentifier:
-                    type: string
-                  Mailer:
-                    type: object
-                    properties:
-                      Name:
-                        type: object
-                        properties:
-                          En:
-                            type: string
-                          Fr:
-                            type: string
-                      ReferenceID:
-                        type: string
-                      Logo:
-                        type: object
-                        properties:
-                          En:
-                            type: string
-                          Fr:
-                            type: string
-                          OID:
-                            type: string
-                      OID:
-                        type: string
-                  ServiceType:
-                    type: integer
-                    description: |
-                      25 for mail arriving soon (or delivered if date is in the past),
-                      otherwise mail is out for delivery
-                  HasAd:
-                    type: boolean
-                  OID:
-                    type: string
-            Date:
+            Name:
+              type: object
+              properties:
+                En:
+                  type: string
+                Fr:
+                  type: string
+              required:
+                - En
+                - Fr
+            ReferenceID:
               type: string
-              format: full-date
-              description: "Date on which the mailpieces were/will be delivered"
+            Logo:
+              type: object
+              properties:
+                En:
+                  type: string
+                Fr:
+                  type: string
+                OID:
+                  type: string
+            OID:
+              type: string
+          required:
+            - Name
+        ServiceType:
+          type: integer
+          description: |
+            25 for mail arriving soon (or delivered if date is in the past),
+            otherwise mail is out for delivery
+        HasAd:
+          type: boolean
+        OID:
+          type: string
+      required:
+        - ServiceType
   parameters:
     CpcId:
       name: cpcid
